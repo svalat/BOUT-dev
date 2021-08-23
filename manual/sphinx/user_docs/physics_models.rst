@@ -313,14 +313,14 @@ multiplied/divided by scalar fields and real numbers, for example::
     a = b * f; a = b * r;
     a = b / f; a = b / r;
 
-In addition the dot and cross products are represented by ``*`` and
-:math:`\wedge` \ symbols::
+In addition the dot product is represented by ``*``, while the cross
+product requires the `cross` function::
 
     Vector3D a, b, c;
     Field3D f;
 
     f = a * b // Dot-product
-    a = b ^ c // Cross-product
+    a = cross(b, c) // Cross-product
 
 For both scalar and vector field operations, so long as the result of an
 operation is of the correct type, the usual C/C++ shorthand notation can
@@ -329,12 +329,9 @@ be used::
     Field3D a, b;
     Vector3D v, w;
 
-    a += b; v *= a; v -= w; v ^= w; // valid
+    a += b; v *= a; v -= w; // valid
     v *= w; // NOT valid: result of dot-product is a scalar
 
-**Note**: The operator precedence for :math:`\wedge` is lower than
-``+``, ``*`` and ``/`` so it is recommended to surround ``a ^ b`` with
-braces.
 
 Evolution equations
 ~~~~~~~~~~~~~~~~~~~
@@ -403,10 +400,10 @@ variable ``var``, use ``ddt(var)``. The ideal MHD equations can be
 written as::
 
     int rhs(BoutReal t) override {
-      ddt(rho) = -V_dot_Grad(v, rho) - rho*Div(v);
-      ddt(p) = -V_dot_Grad(v, p) - g*p*Div(v);
-      ddt(v) = -V_dot_Grad(v, v) + ( (Curl(B)^B) - Grad(p) ) / rho;
-      ddt(B) = Curl(v^B);
+      ddt(rho) = -V_dot_Grad(v, rho) - rho * Div(v);
+      ddt(p) = -V_dot_Grad(v, p) - g * p * Div(v);
+      ddt(v) = -V_dot_Grad(v, v) + (cross(Curl(B), B) - Grad(p)) / rho;
+      ddt(B) = Curl(cross(v, B));
     }
 
 Where the differential operators `vector = Grad(scalar) <Grad>`,
