@@ -433,10 +433,9 @@ object in the initialisation function::
       BoutReal gamma;
 
       int init(bool restarting) override {
-        auto globalOptions = Options::root();
-        auto options = globalOptions["mhd"];
+        auto& options = Options::root()["mhd"];
 
-        OPTION(options, g, 5.0 / 3.0);
+        g = options["g"].doc("Ratio of specific heats").withDefault(5.0 / 3.0);
         ...
 
 This specifies that an option called “g” in a section called “mhd”
@@ -448,11 +447,18 @@ line will appear::
 
           Option mhd:g = 1.66667 (default)
 
-This function can be used to get integers and booleans. To get
-strings, there is the function (``char* options.getString(section,
-name)``. To separate options specific to the physics model, these
-options should be put in a separate section, for example here the
-“mhd” section has been specified.
+To separate options specific to the physics model, these options should
+be put in a separate section, for example here the “mhd” section has
+been specified::
+
+        auto& options = Options::root()["mhd"];
+
+``Options::root()`` is the "top-level" of the input file. The same
+syntax is used to access both sections and values. Also note that we
+store the "mhd" section in ``auto& options``: the ``&`` is important,
+without it, we would make a copy of the section. Instead, we want to use
+a reference, so that we can update the global/root ``Options`` object
+with the values that have been used, and the documentation.
 
 Most of the time, the name of the variable (e.g. ``g``) will be the
 same as the identifier in the options file (“g”). In this case, there

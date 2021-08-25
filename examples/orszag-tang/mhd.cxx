@@ -25,9 +25,10 @@ private:
 
     // read options
     auto& options = Options::root()["mhd"];
-    g = options["g"].withDefault(5.0 / 3.0);
-    include_viscos = options["include_viscos"].withDefault(false);
-    viscos = options["viscos"].withDefault(0.1);
+    g = options["g"].doc("Ratio of specific heats").withDefault(5.0 / 3.0);
+    include_viscos =
+        options["include_viscos"].doc("Include viscosity terms").withDefault(false);
+    viscos = options["viscos"].doc("Viscosity").withDefault(0.1);
 
     // Read 2D initial profiles
     GRID_LOAD(rho0);
@@ -46,7 +47,7 @@ private:
     B.covariant = false; // evolve contravariant components
     solver->add(B, "B");
 
-    Coordinates *coord = mesh->getCoordinates();
+    Coordinates* coord = mesh->getCoordinates();
     output.write("dx(0,0,0) = {:e}, dy(0,0,0) = {:e}, dz(0,0,0) = {:e}\n",
                  coord->dx(0, 0, 0), coord->dy(0, 0, 0), coord->dz(0, 0, 0));
 
