@@ -37,6 +37,7 @@ if (APPLE)
     add_library(Libuuid::libuuid UNKNOWN IMPORTED)
     set_target_properties(Libuuid::libuuid PROPERTIES
       IMPORTED_LOCATION ${CFLIB}
+      FRAMEWORK TRUE
       )
   endif()
   return()
