@@ -37,6 +37,8 @@
 #include <bout/assert.hxx>
 #include <bout/openmpwrap.hxx>
 
+#include "custom_cpp_allocator.hxx"
+
 namespace {
 template <typename T>
 using iterator = T*;
@@ -354,6 +356,7 @@ private:
    * Expects \p len >= 0
    */
   dataPtrType get(size_type len) {
+    static Allocator<dataBlock> alloc;
     ASSERT3(len >= 0);
 
     dataPtrType p;
@@ -368,7 +371,7 @@ private:
       // enough space to put it in the store so that `release` can be
       // noexcept
       st.reserve(1);
-      p = std::make_shared<dataBlock>(len);
+      p = std::allocate_shared<dataBlock, Allocator<dataBlock>>(alloc, len);
     }
 
     return p;

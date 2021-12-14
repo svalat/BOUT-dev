@@ -5,9 +5,10 @@ SOURCEC		= bout_types.cxx boutexception.cxx derivs.cxx \
 		  msg_stack.cxx options.cxx output.cxx \
 		  utils.cxx optionsreader.cxx boutcomm.cxx \
 		  timer.cxx range.cxx petsclib.cxx expressionparser.cxx \
-	          slepclib.cxx type_name.cxx
+	          slepclib.cxx type_name.cxx custom_cpp_allocator.cxx
 
-SOURCEH		= $(SOURCEC:%.cxx=%.hxx) globals.hxx bout_types.hxx multiostream.hxx
+SOURCEH		= $(SOURCEC:%.cxx=%.hxx) globals.hxx bout_types.hxx multiostream.hxx \
+		  custom_cpp_allocator.hxx
 TARGET		= lib
 
 include $(BOUT_TOP)/make.config

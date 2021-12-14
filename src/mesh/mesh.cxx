@@ -12,6 +12,8 @@
 
 #include <output.hxx>
 
+#include <custom_cpp_allocator.hxx>
+
 Mesh* Mesh::create(GridDataSource *s, Options *opt) {
   return MeshFactory::getInstance()->createMesh(s, opt);
 }
@@ -359,15 +361,17 @@ const std::vector<int> Mesh::readInts(const std::string &name, int n) {
   return result;
 }
 
+static Allocator<Coordinates> gblAllocator;
+
 std::shared_ptr<Coordinates> Mesh::createDefaultCoordinates(const CELL_LOC location,
     bool force_interpolate_from_centre) {
 
   if (location == CELL_CENTRE || location == CELL_DEFAULT) {
     // Initialize coordinates from input
-    return std::make_shared<Coordinates>(this, options);
+    return std::allocate_shared<Coordinates, Allocator<Coordinates>>(gblAllocator, this, options);
   } else {
     // Interpolate coordinates from CELL_CENTRE version
-    return std::make_shared<Coordinates>(this, options, location,
+    return std::allocate_shared<Coordinates, Allocator<Coordinates>>(gblAllocator, this, options, location,
         getCoordinates(CELL_CENTRE), force_interpolate_from_centre);
   }
 }
