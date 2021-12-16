@@ -2,7 +2,7 @@
 # Input file for conduction case
 #
 
-nout = 100       # Number of output timesteps
+nout = 5       # Number of output timesteps
 timestep = 0.1  # Time between outputs
 
 MXG = 0 # No X communications
@@ -11,7 +11,7 @@ MXG = 0 # No X communications
 [mesh]  # Geometry of the mesh
 
 nx = 1
-ny = 100
+ny = 800000
 nz = 1
 
 dy = 0.2

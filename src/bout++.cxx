@@ -187,7 +187,7 @@ namespace bout {
 namespace experimental {
 void setupSignalHandler(SignalHandler signal_handler) {
 #ifdef SIGHANDLE
-  std::signal(SIGSEGV, signal_handler);
+  //std::signal(SIGSEGV, signal_handler);
 #endif
 #ifdef BOUT_FPE
   std::signal(SIGFPE, signal_handler);

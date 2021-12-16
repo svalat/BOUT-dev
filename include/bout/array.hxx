@@ -52,8 +52,8 @@ using const_iterator = const T*;
  */
 template <typename T>
 struct ArrayData {
-  ArrayData(int size) : len(size) { data = new T[len]; }
-  ~ArrayData() { delete[] data; }
+  ArrayData(int size) : len(size) { void * ptr = gblAllocatorImplem.malloc(len * sizeof(T)); data = new (ptr) T[len]; }
+  ~ArrayData() { for (int i = 0 ; i < len ; i++) data[i].~T(); gblAllocatorImplem.free(data); }
   iterator<T> begin() const { return data; }
   iterator<T> end() const { return data + len; }
   int size() const { return len; }
@@ -371,7 +371,8 @@ private:
       // enough space to put it in the store so that `release` can be
       // noexcept
       st.reserve(1);
-      p = std::allocate_shared<dataBlock, Allocator<dataBlock>>(alloc, len);
+      //p = std::allocate_shared<dataBlock, Allocator<dataBlock>>(alloc, len);
+      p = std::make_shared<dataBlock>(len);
     }
 
     return p;

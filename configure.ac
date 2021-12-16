@@ -66,6 +66,8 @@ AC_ARG_WITH(system_mpark, [AS_HELP_STRING([--with-system-mpark],
         [Use mpark.variant already installed rather then the bundled one])],,[with_system_mpark=auto])
 AC_ARG_WITH(system_uuid,  [AS_HELP_STRING([--with-system-uuid],
         [Use libuuid to generate UUIDs])],,[with_system_uuid=auto])
+AC_ARG_WITH(ummap_io,     [AS_HELP_STRING([--with-ummap-io],
+        [Use the ummap-io-v2 library])],,[with_ummap=auto])
 
 dnl --with-hdf5 flags are set in AX_LIB_{PARALLEL}HDF5
 
@@ -648,6 +650,27 @@ AS_IF([test "$with_parallelhdf5" = "yes"], [
   file_formats="$file_formats Parallel HDF5"
   ], [
   AC_MSG_NOTICE([Parallel HDF5 support disabled])
+])
+
+#############################################################
+# UMMAP-IO library
+#############################################################
+
+HAS_UMMAP_IO="no"
+AS_IF([test -d "$with_ummap_io"],[LDFLAGS="-L$with_ummap_io/lib $LDFLAGS"], [])
+AS_IF([test -d "$with_ummap_io"],[EXTRA_INCS="-I$with_ummap_io/include $EXTRA_INCS"], [])
+AC_SEARCH_LIBS([ummap_init], [ummap-io], , [
+  AC_MSG_ERROR([unable to find the ummap-io library])
+])
+#AC_CHECK_HEADERS([ummap/ummap.h], ,AC_MSG_ERROR([Couldn't find ummap-io-v2 header files]), [AC_INCLUDES_DEFAULT])
+AS_IF([test "$HAS_UMMAP_IO" = "yes"], [
+  AC_MSG_NOTICE([Found UMMAP-IO])
+  CXXFLAGS="$CXXFLAGS -DUMMAP_IO"
+  EXTRA_INCS="$EXTRA_INCS $HDF5_CPPFLAGS"
+  #EXTRA_LIBS="$EXTRA_LIBS -lummap-io"
+  #HAS_UMMAP_IO="yes"
+  ], [
+  AC_MSG_NOTICE([Ummap-io support disabled])
 ])
 
 #############################################################
@@ -1437,6 +1460,7 @@ AC_SUBST(SLEPC_ARCH)
 AC_SUBST(HAS_OPENMP)
 AC_SUBST(HAS_NLS)
 AC_SUBST(HAS_FFTW)
+AC_SUBST(HAS_UMMAP_IO)
 
 AC_CONFIG_FILES([bin/bout-config])
 AC_CONFIG_FILES([src/makefile])
@@ -1465,6 +1489,7 @@ AC_MSG_NOTICE([  MUMPS support           : $HAS_MUMPS])
 AC_MSG_NOTICE([  Lapack support          : $HAS_LAPACK])
 AC_MSG_NOTICE([  Scorep support          : $HAS_SCOREP])
 AC_MSG_NOTICE([  OpenMP support          : $HAS_OPENMP (schedule: $OPENMP_SCHEDULE)])
+AC_MSG_NOTICE([  Ummap-io support        : $HAS_UMMAP_IO])
 AC_MSG_NOTICE([  Natural language support: $HAS_NLS (path: $localedir)])
 AC_MSG_NOTICE([  System UUID generator   : $BOUT_HAS_UUID_SYSTEM_GENERATOR])
 
