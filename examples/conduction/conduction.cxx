@@ -19,6 +19,9 @@ protected:
     
     // Get the options
     auto& options = Options::root()["conduction"];
+    options["restart"] = false;
+    options["dump_on_restart"] = false;
+    Options::root()["dump_on_restart"] = false;
     
     // Read from BOUT.inp, setting default to 1.0
     // The doc() provides some documentation in BOUT.settings

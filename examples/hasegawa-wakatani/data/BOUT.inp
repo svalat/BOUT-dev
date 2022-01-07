@@ -3,7 +3,7 @@
 #
 
 timestep = 1.   # Output timestep
-nout = 200      # Number of output steps
+nout = 2      # Number of output steps
 
 myg = 0  # No need for Y communications
 
